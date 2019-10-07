@@ -25,13 +25,13 @@ medved. Zvrhano zibelko sladkih hrušk mi je prinesel za en sam izdrt trn"."""
 # >>> find_words(test_text, 'de')
 # {'izdere', 'debel', 'oddide', 'začudeno'}
 ###############################################################################
+import re
+
 def find_words(dat, niz):
-    gledamo = dat.split()
-    hocemo = []
-    for beseda in gledamo:
-        if niz in beseda:
-            hocemo.append(beseda)
-    return hocemo
+    iscemo = r'\b\w*' + niz + r'\w*\b'
+    gledamo = re.findall(iscemo, dat)
+    return set(gledamo)
+    
 
 ###############################################################################
 # 2) Sestavite funkcijo [find_prefix], ki vrne množico vseh besed, ki se
@@ -41,13 +41,9 @@ def find_words(dat, niz):
 # {'zibala', 'zibel', 'zibelko'}
 ###############################################################################
 def find_prefix(dat, niz):
-    gledamo = dat.split()
-    hocemo = []
-    for beseda in gledamo:
-        if beseda[:len(niz)] == niz:
-            hocemo.append(beseda)
-    return hocemo
-
+    iscemo = r'\b' + niz + r'\w*\b'
+    gledamo = re.findall(iscemo, dat)
+    return set(gledamo)
 
 ###############################################################################
 # 3) Sestavite funkcijo [find_suffix], ki vrne množico vseh besed, ki se
@@ -56,7 +52,11 @@ def find_prefix(dat, niz):
 # >>> find_suffix(test_text, 'la')
 # {'zibala', 'razveselila', 'prestrašila', 'šivala', 'opazila', 'tla'}
 ###############################################################################
-
+def find_suffix(dat, niz):
+    iscemo = r'\b\w*' + niz + r'\W?\b'
+    gledamo = re.findall(iscemo, dat)
+    return set(gledamo)
+  
 
 ###############################################################################
 # 4) Sestavite funkcijo [double_letters], ki sprejme niz in vrne množico vseh
@@ -65,3 +65,8 @@ def find_prefix(dat, niz):
 # >>> double_letters('A volunteer is worth twenty pressed men.')
 # {'volunteer', 'pressed'}
 ###############################################################################
+
+def double_letters(niz):
+    iscemo = r'\b(\w*(\w)\2\w*)\b'
+    return set(j[0] for j in re.findall(iscemo, niz))
+    

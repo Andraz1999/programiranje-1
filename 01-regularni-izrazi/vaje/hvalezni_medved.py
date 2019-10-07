@@ -25,7 +25,13 @@ medved. Zvrhano zibelko sladkih hrušk mi je prinesel za en sam izdrt trn"."""
 # >>> find_words(test_text, 'de')
 # {'izdere', 'debel', 'oddide', 'začudeno'}
 ###############################################################################
-
+def find_words(dat, niz):
+    gledamo = dat.split()
+    hocemo = []
+    for beseda in gledamo:
+        if niz in beseda:
+            hocemo.append(beseda)
+    return hocemo
 
 ###############################################################################
 # 2) Sestavite funkcijo [find_prefix], ki vrne množico vseh besed, ki se
@@ -34,6 +40,13 @@ medved. Zvrhano zibelko sladkih hrušk mi je prinesel za en sam izdrt trn"."""
 # >>> find_prefix(test_text, 'zi')
 # {'zibala', 'zibel', 'zibelko'}
 ###############################################################################
+def find_prefix(dat, niz):
+    gledamo = dat.split()
+    hocemo = []
+    for beseda in gledamo:
+        if beseda[:len(niz)] == niz:
+            hocemo.append(beseda)
+    return hocemo
 
 
 ###############################################################################

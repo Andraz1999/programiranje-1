@@ -231,7 +231,11 @@ let rec filter f list =
  - : bool = false
 [*----------------------------------------------------------------------------*)
 
-let rec exists = ()
+let rec exists f list =
+  match list with
+    | [] -> false
+    | x :: xs -> if f x then true else exists f xs
+
 
 (*----------------------------------------------------------------------------*]
  Funkcija [first f default list] vrne prvi element seznama, za katerega

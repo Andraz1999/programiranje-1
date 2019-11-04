@@ -248,4 +248,7 @@ let rec exists f list =
  - : int = 0
 [*----------------------------------------------------------------------------*)
 
-let rec first = ()
+let rec first f default list =
+  match list with
+  | [] -> default
+  | x :: xs -> if f x then x else first f default xs

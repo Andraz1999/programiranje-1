@@ -214,7 +214,7 @@ let rec count_magic list=
   List.fold_left folder {fire = 0; frost = 0; arcane = 0} list
  
 
-
+adadasd
 (*----------------------------------------------------------------------------*]
  Želimo poiskati primernega kandidata za delovni razpis. Študent lahko postane
  zgodovinar po vsaj treh letih študija, raziskovalec po vsaj štirih letih

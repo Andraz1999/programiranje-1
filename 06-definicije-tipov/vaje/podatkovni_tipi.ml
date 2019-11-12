@@ -113,7 +113,14 @@ let rec intbool_reverse list =
  vrednosti. Funkcija je repno rekurzivna in ohranja vrstni red elementov.
 [*----------------------------------------------------------------------------*)
 
-let rec intbool_separate = ()
+let rec intbool_separate list = 
+  let rec aux acci accb list =
+  match list with 
+    | Nil -> (acci, accb)
+    | Int (x, xs) -> aux (x :: acci) accb xs
+    | Bool (b, bs) -> aux acci (b :: accb) bs
+  in
+  aux [] [] (intbool_reverse list)
 
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
  Določeni ste bili za vzdrževalca baze podatkov za svetovno priznano čarodejsko
@@ -200,9 +207,9 @@ let update'' ({fire = fire2; frost; arcane} as counter) = function
  # count_magic [professor; professor; professor];;
  - : magic_counter = {fire = 3; frost = 0; arcane = 0}
 [*----------------------------------------------------------------------------*)
-let wizard = {name = "Matija"; status = Employed (Fire, Teacher)}
+let professor = {name = "Matija"; status = Employed (Fire, Teacher)}
 
-let professor = wizard
+let  master = {name = "Andraž"; status = Student (Fire, 2)}
 
 let rec count_magic list=
   let folder counter {status} =
@@ -229,4 +236,20 @@ let rec count_magic list=
  - : string option = Some "Jaina"
 [*----------------------------------------------------------------------------*)
 
-let rec find_candidate = ()
+let rec find_candidate magic specialisation list =
+  let year =
+  match specialisation with
+    | Historian -> 3
+    | Researcher -> 4
+    | Teacher -> 5
+  in  
+  let rec search list =
+  match list with
+    | [] -> None
+    | {name; status} :: xs ->
+      match status with
+      | Student (m, y) when m = magic && y >= year -> Some name
+      | _ -> search xs
+  in search list
+
+

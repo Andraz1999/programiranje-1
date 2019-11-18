@@ -4,28 +4,40 @@
 
 (* 1.1) Definirajte funkcijo, ki vzame par in zamenja komponenti para.
    Primer: /obrni (2, 4) = (4, 2)/ *)
- let obrni = failwith "dopolni me"
+ let obrni = function
+    | (x, y) -> (y, x)
+    | _ -> failwith "dopolni me"
 
 (* 1.2) Definirajte funkcijo, ki vzame par p in vrednost x in zamenja drugo
    komponento para p z x.
    Primer: /zamenjaj_drugo (2, 4) 7 = (2, 7)/ *)
- let zamenjaj_drugo = failwith "dopolni me"
+ let zamenjaj_drugo p x = 
+    match p with
+    | (z, y) -> (z, x)
+    | _ -> failwith "dopolni me"
 
 (* 1.3) Definirajte funkcijo, ki vzame seznam parov in izračuna nov seznam parov,
    ki imajo drugo komponento zamenjano z 42.
    Primer: /vsem_zamenjaj_drugo_z_42 [(12, 1); (2, 4)] = [(12, 42); (2, 42)]/ *)
- let vsem_zamenjaj_drugo_z_42 = failwith "dopolni me"
+ let vsem_zamenjaj_drugo_z_42 list = 
+    let rec aux acc = function
+        | [] -> List.rev acc
+        | (x, y) :: xs -> aux ((x, 42) :: acc) xs
+    in aux [] list
 
 (* 1.4) Definirajte funkcijo, ki varno vrne glavo seznama v primeru, ko seznam ni prazen.
    Uporabite tip option.
    Primer: /glava [1; 2; 3] = Some 1/ *)
- let glava = failwith "dopolni me"
+ let glava = function
+    | x :: xs -> x
+    | _ -> failwith "NE"
 
 (* 1.5) Definirajte funkcijo, vzame funkcijo (f: 'a -> 'b), neko vrednost (x : 'a) in
    celo število n. Funkcija naj vrne vrednost, ki jo dobimo če f n-krat uporabimo na x,
    torej f (f ... (f x)...).
    Primer: /uporabi_veckrat succ 0 420 = 420/ *)
- let uporabi_veckrat = failwith "dopolni me"
+ let rec uporabi_veckrat f x n =
+    if n = 0 then x else uporabi_veckrat f (f x) (n - 1)
 
 (* ======================================= *)
 (* 2. naloga: podatkovni tipi in rekurzija *)
@@ -36,7 +48,7 @@
    tipom /'a drevo/ z enim konstruktorjem, ki sprejme:
    - vrednost (koren) tipa /'a/ in
    - seznam (gozd) dreves tipa /'a drevo/. *)
-type 'a drevo = DopolniMe
+type 'a drevo = Rose of 'a * ('a drevo list) 
 
 (* 2.2) Definirajte naslednja rožna drevesa:
 
@@ -46,26 +58,56 @@ type 'a drevo = DopolniMe
                                -1  t'  0
 
  *)
-
-let t = failwith "dopolni me"
-let t' = failwith "dopolni me"
-let t'' = failwith "dopolni me"
+let a = Rose (-1, [])
+let b = Rose (0, [])
+let t = Rose (1, [])
+let t' = Rose (2, [t; t])
+let t'' = Rose (3, [a; t'; b])
 
 (* 2.3) Definirajte funkcijo, ki vrne gozd rožnega drevesa. *)
-let vrni_gozd = failwith "dopolni me"
+let vrni_gozd (Rose ( _ , xs)) = xs
 
 (* 2.4) Definirajte funkcijo, ki izpiše vse vrednosti v rožnem drevesu celih števil.
    Števila naj bodo v ločenih vrsticah. Uporabite (print_int : int -> unit) in
    (print_newline : unit -> unit). *)
-let izpisi_vrednosti = failwith "dopolni me"
+
+(*let izpisi_vrednosti (Rose (root, forest)) =
+  let rec iter f = function
+    | [] -> ()
+    | x :: xs -> f x; iter f xs
+  in
+  print_endline (string_of_int root); (iter (print_int) (forest))*)
+
+(*let izpisi_vrednost' (Rose (root, forest)) =
+    let rec iter list =
+    match list with
+    | [] -> ()
+    | x :: xs -> print_int x; print_newline (); iter xs    
+    in
+    print_int root; print_newline (); iter forest*)
+
+let rec izpisi_vrednost'' (Rose (root, forest)) =
+    print_int root; print_newline();
+    List.map izpisi_vrednost'' forest 
+      
+
 
 (* 2.5) Definirajte funkcijo, ki izračuna globino rožnega drevesa, t.j. dolžino
    najdaljše poti od korena do lista. *)
-let globina = failwith "dopolni me"
+
+let rec globina' (Rose (_, forest)) =
+   ((+) 1 (List.fold_left max 0 (List.map globina' forest))) 
 
 (* 2.6) Definirajte funkcijo, ki sestavi (poljubno) rožno drevo globine n.
    Vrednosti v korenih so poljubne. *)
-let globoko_drevo = failwith "dopolni me"
+
+let globoko_drevo n =
+  let rec aux acc n =
+    if n > 0
+    then aux (Rose (n, [acc])) (n-1)
+    else acc
+  in aux (Rose (n, [])) (n-1)
+
 
 (* 2.7) Definirajte funkcijo, ki sprejme funkcijo (f : 'b -> 'a -> 'b) in začetno vrednost (acc : 'b)
    in funkcijo f zloži [fold] preko drevesa (t : 'a drevo). Vrstni red pri tem ni pomemben.

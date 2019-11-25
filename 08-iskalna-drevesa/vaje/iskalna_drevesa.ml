@@ -169,12 +169,12 @@ let rec member2 bst = List.mem (list_of_tree bst)
 [*----------------------------------------------------------------------------*)
 
 let succ = function
-  | Empty -> failwith "Prazno drevo"
-  | Node (_, x, Empty) -> failwith "Ne obstaja"
+  | Empty -> None
+  | Node (_, x, Empty) -> None
   | Node (l, x, d) -> let rec min = function
-                     | Node (Empty, y, _) -> y
+                     | Node (Empty, y, _) -> Some y
                      | Node (le, y, _) -> min le
-                     | _ -> failwith "Nekaj je narobe"
+                     | _ -> None
                      in min d
 
 (*----------------------------------------------------------------------------*]

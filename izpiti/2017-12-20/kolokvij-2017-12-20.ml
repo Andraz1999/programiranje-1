@@ -50,6 +50,7 @@
    - seznam (gozd) dreves tipa /'a drevo/. *)
 type 'a drevo = Rose of 'a * ('a drevo list) 
 
+
 (* 2.2) Definirajte naslednja rožna drevesa:
 
    t = 1,  t' =  2   ,      t'' =  3
@@ -86,9 +87,9 @@ let vrni_gozd (Rose ( _ , xs)) = xs
     in
     print_int root; print_newline (); iter forest*)
 
-let rec izpisi_vrednost'' (Rose (root, forest)) =
+(* let rec izpisi_vrednost'' (Rose (root, forest)) =
     print_int root; print_newline();
-    List.map izpisi_vrednost'' forest 
+    List.map izpisi_vrednost'' forest  *)
       
 
 
@@ -101,8 +102,16 @@ let rec globina' (Rose (_, forest)) =
 (* 2.6) Definirajte funkcijo, ki sestavi (poljubno) rožno drevo globine n.
    Vrednosti v korenih so poljubne. *)
 
+let probi n =
+  let rec aux sample n =
+    if n <= 1 then sample
+    else 
+    match sample with
+    | Rose (x, y) -> aux (Rose (x, [Rose (x, y)] )) (n-1)
+    in aux (Rose (1, [])) n 
+
 let globoko_drevo n =
-  let rec aux acc n =
+  let rec aux acc n = 
     if n > 0
     then aux (Rose (n, [acc])) (n-1)
     else acc

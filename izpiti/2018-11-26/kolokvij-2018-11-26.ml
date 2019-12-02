@@ -86,3 +86,4 @@ let razdeli_potnike seznam =
     | y :: ys -> let koncno = aux [] [y] y.status ys in
     List.rev koncno
 
+ 

@@ -233,7 +233,14 @@ module Polar : COMPLEX = struct
   let rad_of_deg deg = (deg /. 180.) *. pi
   let deg_of_rad rad = (rad /. pi) *. 180.
 
-  let eq x y = failwith "later"
+  let eq x y = if x.magn <> y.magn then false else
+    let rec aux c d = 
+    match (c, d) with
+    | (a, b) when a < 4. *. pi && b < 4. *. pi -> a = b
+    | (a, b) when a < 4. *. pi && b >= 4. *. pi -> aux a (b -. (4. *. pi)) 
+    | (a, b) when a >= 4. *. pi && b < 4. *. pi -> aux (a -. (4. *. pi)) b
+    | (a, b) -> aux (a -. (4. *. pi)) (b -. (4. *. pi))
+    in aux x.arg y.arg
   (* Dodajte manjkajoče! *)
 
 end

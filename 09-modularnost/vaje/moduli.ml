@@ -54,8 +54,12 @@ module type NAT = sig
   val eq   : t -> t -> bool
   val zero : t
   (* Dodajte manjkajoče! *)
-  (* val to_int : t -> int *)
-  (* val of_int : int -> t *)
+  val to_int : t -> int 
+  val of_int : int -> t 
+  val one : t
+  val sestevanje : t -> t -> t
+  val odstevanje : t -> t -> t
+  val mnozenje   : t -> t -> t
 end
 
 (*----------------------------------------------------------------------------*]
@@ -67,13 +71,19 @@ end
  [failwith "later"], vendar to ne deluje za konstante.
 [*----------------------------------------------------------------------------*)
 
-module Nat_int : NAT = struct
+module Nat_int : NAT = struct 
 
   type t = int
-  let eq x y = failwith "later"
+  let eq x y = (x = y)
+  (* eq = (=) *)
   let zero = 0
+  let one = 1
   (* Dodajte manjkajoče! *)
-
+  let to_int n = n
+  let of_int n = if n >= 0 then n else failwith "Negativno število"
+  let sestevanje x y = x + y
+  let odstevanje x y = max (x - y) 0
+  let mnozenje x y = x * y
 end
 
 (*----------------------------------------------------------------------------*]
@@ -90,13 +100,50 @@ end
 
 module Nat_peano : NAT = struct
 
-  type t = unit (* To morate spremeniti! *)
-  let eq x y = failwith "later"
-  let zero = () (* To morate spremeniti! *)
-  (* Dodajte manjkajoče! *)
+  type t = Zero | Succ of t
+  let rec eq x y =
+  match (x, y) with
+  | (Zero, Zero) -> true
+  | (Zero, _) | (_, Zero) -> false
+  | (Succ a, Succ b) -> eq a b  
+  let zero = Zero
+  let one = Succ Zero
+  let to_int n =
+    let rec aux acc = function
+      | Zero -> acc
+      | Succ x -> aux (acc + 1) x
+    in aux 0 n
+  let of_int n = 
+    let rec aux acc = function
+      | y when y <= 0 -> acc
+      | x -> aux (Succ acc) (x-1)
+    in aux zero n
+  let rec sestevanje x y =
+    match (x, y) with
+    | (Zero, a) | (a, Zero) -> a
+    | (a, Succ b) -> sestevanje (Succ a)  b  
+  let rec odstevanje x y = 
+    match (x, y) with
+    | (Zero, _) -> Zero
+    | (a, Zero) -> a
+    | (Succ a, Succ b) -> odstevanje a b
+  
+  let rec mnozenje x y =
+    let c = x 
+    in
+    let rec mnozenje' x y =
+    match (x, y) with 
+    | (Zero, _) | (_, Zero) -> Zero
+    | (a, Succ Zero) | (Succ Zero, a) -> a
+    | (a, Succ b) -> mnozenje' (sestevanje a c) b  
+    in mnozenje' x y 
 
-end
-
+end 
+let sedem = Nat_peano.of_int 7
+let stiri = Nat_peano.of_int 4
+let enajst = Nat_peano.sestevanje sedem stiri
+let tri = Nat_peano.odstevanje sedem stiri
+let osemindvajset = Nat_peano.mnozenje sedem stiri
 (*----------------------------------------------------------------------------*]
  V OCamlu lahko module podajamo kot argumente funkcij, z uporabo besede
  [module]. Funkcijo, ki sprejme modul torej definiramo kot
@@ -118,7 +165,14 @@ end
  - : int = 4950
 [*----------------------------------------------------------------------------*)
 
-let sum_nat_100 (module Nat : NAT) = ()
+let sum_nat_100 (module Nat : NAT) = 
+  let sto = Nat.of_int 100 in
+    let rec aux current acc = 
+    if Nat.eq current sto then acc
+    else aux (Nat.sestevanje current Nat.one) (Nat.sestevanje current acc)
+    in
+    aux Nat.one Nat.zero |> Nat.to_int 
+      
 
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
  Now we follow the fable told by John Reynolds in the introduction.
@@ -133,7 +187,13 @@ let sum_nat_100 (module Nat : NAT) = ()
 module type COMPLEX = sig
   type t
   val eq : t -> t -> bool
-  (* Dodajte manjkajoče! *)
+  val zero : t
+  val one : t
+  val imag : t
+  val neg : t -> t
+  val konj : t -> t
+  val plus : t -> t -> t
+  val krat : t -> t -> t
 end
 
 (*----------------------------------------------------------------------------*]
@@ -145,8 +205,14 @@ module Cartesian : COMPLEX = struct
 
   type t = {re : float; im : float}
 
-  let eq x y = failwith "later"
-  (* Dodajte manjkajoče! *)
+  let eq x y = (x.re = y.re && x.im = y.im)
+  let zero = {re = 0.; im = 0.}
+  let one = {re = 1.; im = 0.}
+  let imag = {re = 0.; im = 1.}
+  let neg x = {re = -.x.re; im = x.im}
+  let konj x = {re = x.re; im = -.x.im}
+  let plus x y = {re = x.re +. y.re; im = x.im +. y.im}
+  let krat x y = {re = (x.re *. y.re +. x.im +. y.im); im = (x.re *. y.im +. x.im *. y.re)}
 
 end
 
@@ -198,4 +264,4 @@ end
  - : unit = ()
 [*----------------------------------------------------------------------------*)
 
-let count (module Dict : DICT) list = ()
+(*let count (module Dict : DICT) list = ()*)

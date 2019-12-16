@@ -172,5 +172,3 @@ let index_min a lower upper =
  Namig: Za testiranje uporabi funkciji [Array.of_list] in [Array.to_list]
  skupaj z [randlist].
 [*----------------------------------------------------------------------------*)
-
-

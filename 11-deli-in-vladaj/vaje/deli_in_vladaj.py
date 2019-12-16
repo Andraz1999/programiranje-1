@@ -29,6 +29,25 @@
 
 
 
+def pivot(table, start, end):
+    left_i = start 
+    right_i = end
+    pivot = table[start]
+    while left_i < right_i:
+        if table[left_i + 1] < pivot:
+            left_i += 1
+        elif table[right_i] >= pivot:
+            right_i -= 1
+        else: table[left_i + 1], table[right_i] = table[right_i], table[left_i + 1]
+    table[right_i], table[start]  = pivot, table[right_i]
+    return right_i 
+
+
+
+
+a = [10, 4, 5, 15, 11, 2, 17, 0, 18]
+
+
 ###############################################################################
 # V tabeli želimo poiskati vrednost k-tega elementa po velikosti.
 #
@@ -44,8 +63,18 @@
 # jo rešite brez da v celoti uredite tabelo [a].
 ###############################################################################
 
+def kth_element(table, k, start= 0, end= None):
+    if end is None:
+        end = len(table) - 1
+    x = pivot(table, start, end)
+    if x == k: 
+        return table[k]
+    elif x > k:
+        return kth_element(table, k, start, x)
+    else:
+        return kth_element(table, k - x, x, end)
 
-
+a = [10, 4, 5, 15, 11, 3, 17, 2, 18]
 ###############################################################################
 # Tabelo a želimo urediti z algoritmom hitrega urejanja (quicksort).
 #
@@ -60,6 +89,15 @@
 #     [2, 3, 4, 5, 10, 11, 15, 17, 18]
 ###############################################################################
 
+def quicksort(a, start= 0, end= None):
+    if end is None:
+        end = len(a) - 1
+    if start >= end:
+        return a 
+    else:
+        x = pivot(a, start, end)
+        quicksort(a, start, x - 1)
+        quicksort(a, x + 1, end)
 
 
 ###############################################################################
@@ -84,7 +122,23 @@
 #     [1,1,2,3,3,4,5,5,6,7,7,10]
 #
 ###############################################################################
-
+def zlij(target, begin, end, list_1, list_2):
+    if begin == end:
+        return target
+    elif list_1 == [] and list_2 == []:
+        return 'Failwith'
+    elif list_1 == []:
+        target[begin] = list_2[0]
+        return zlij(target, begin + 1, end, list_1, list_2[1:])
+    elif  list_2 == []:
+        target[begin] = list_1[0]
+        return zlij(target, begin + 1, end, list_1[1:], list_2)
+    elif list_1[0] <= list_2[0]:
+        target[begin] = list_1[0]
+        return zlij(target, begin + 1, end, list_1[1:], list_2)
+    else:
+        target[begin] = list_2[0]
+        return zlij(target, begin + 1, end, list_1, list_2[1:])
 
 
 ###############################################################################
@@ -102,3 +156,15 @@
 # >>> mergesort(a)
 # [2, 3, 4, 5, 10, 11, 15, 17, 18]
 ###############################################################################
+
+def mergesort(a):
+    if len(a) <= 1:
+        return a
+    else:
+        target = [0 for _ in range(len(a))]
+        pol = round(len(a) / 2)
+        levi = a[:pol]
+        desni = a[pol:]
+        return zlij(target, 0, len(target), mergesort(levi), mergesort(desni))  
+a = [10, 4, 5, 15, 11, 3, 17, 2, 18]
+mergesort(a)

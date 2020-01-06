@@ -10,7 +10,9 @@ from functools import lru_cache
 
 
 def najdaljse_narascajoce_podzaporedje(sez):
-    return None
+    if sez == []:
+        return []
+    return []
 
 ###############################################################################
 # Nepreviden študent je pustil robotka z umetno inteligenco nenadzorovanega.
@@ -18,7 +20,7 @@ def najdaljse_narascajoce_podzaporedje(sez):
 # predstavljenega kot matriko števil:
 #   - ničla predstavlja prosto pot
 #   - enica predstavlja izhod iz laboratorija
-#   - katerikoli drugi znak označuje oviro, na katero robotek ne more zaplejati
+#   - katerikoli drugi znak označuje oviro, na katero robotek ne more zapeljati
 
 # Robotek se lahko premika le gor, dol, levo in desno, ter ima omejeno količino
 # goriva. Napišite funkcijo [pobeg], ki sprejme matriko, ki predstavlja sobo,
@@ -47,4 +49,27 @@ soba = [[0, 1, 0, 0, 2],
 
 
 def pobeg(soba, pozicija, koraki):
-    return None
+    @lru_cache(maxsize=None)
+    def min_korak(pozicija):
+        max_vod = len(soba[0])
+        max_nav = len(soba)
+        vodoravno = pozicija[1]
+        navpicno = pozicija[0]
+        if soba[navpicno][vodoravno] == 1:
+            return 0
+        mozna = []
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                if abs(dx) == abs(dy):
+                    pass
+                elif navpicno + dx >= max_nav or vodoravno + dy >= max_vod or navpicno + dx < 0 or vodoravno + dy < 0:
+                    pass
+                elif soba[navpicno + dx][vodoravno + dy] != 0 and soba[navpicno + dx][vodoravno + dy] != 1:
+                    pass 
+                else:
+                    mozna.append((navpicno + dx, vodoravno + dy))
+        return 1 + min([min_korak(par) for par in mozna])
+    return koraki >= min_korak(pozicija)
+
+#pobeg(sob, (3, 1), 5)   
+pobeg([[1,0,0]], (0, 2), 5)

@@ -12,8 +12,11 @@ psa = [
     '13-memoizacija',
 ]
 import random
-
-input('Si pripravljen na vprašanje iz funkcijskega programiranja?')
-print(random.choice(ocaml))
-input('Si pripravljen na vprašanje iz podatkovnih struktur in algoritmov?')
-print(random.choice(psa))
+while True:
+    input('Si pripravljen na vprašanje iz funkcijskega programiranja?')
+    print(random.choice(ocaml))
+    a = input('Si pripravljen na vprašanje iz podatkovnih struktur in algoritmov?')
+    print(random.choice(psa))
+    if a == 'Znam':
+        print('Dobil si 10')
+      
